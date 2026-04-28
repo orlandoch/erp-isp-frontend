@@ -13,7 +13,7 @@ export function useAccounts() {
   async function loadAccounts() {
     if (loaded.value) return
     try {
-      const { data } = await api.get('/settings/accounts', { params: { limit: 200 } })
+      const { data } = await api.get('/accounts', { params: { limit: 200 } })
       const items: any[] = data.data || []
       accounts.value = items.map(a => ({
         label: `${a.code} — ${a.name}`,

@@ -50,7 +50,7 @@ async function submit() {
       name: form.value.name,
       email: form.value.email,
       is_active: form.value.is_active,
-      roles: form.value.roles,
+      roles: Array.isArray(form.value.roles) ? form.value.roles : [],
     }
     if (form.value.password) {
       payload.password = form.value.password
