@@ -47,7 +47,7 @@ const navItems: NavItem[] = [
   { label: 'Doc. Electrónicos', icon: 'pi pi-qrcode', to: '/documentos-electronicos' },
   {
     label: 'Planes y Contratos',
-    icon: 'pi pi-network-wired',
+    icon: 'pi pi-file-contract',
     children: [
       { label: 'Planes de Internet', icon: 'pi pi-list', to: '/contracts/internet-plans' },
       { label: 'Nuevo Plan', icon: 'pi pi-plus', to: '/contracts/internet-plans/new' },
