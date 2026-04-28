@@ -53,6 +53,7 @@ const navItems: NavItem[] = [
       { label: 'Nuevo Plan', icon: 'pi pi-plus', to: '/contracts/internet-plans/new' },
       { label: 'Contratos', icon: 'pi pi-address-book', to: '/contracts/contracts' },
       { label: 'Nuevo Contrato', icon: 'pi pi-plus', to: '/contracts/contracts/new' },
+      { label: 'Plantillas de Contrato', icon: 'pi pi-copy', to: '/contracts/templates' },
     ],
   },
   {

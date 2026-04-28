@@ -144,4 +144,35 @@ export interface Account {
   parent_id: number | null
   created_at: string
   updated_at: string
+
+
+// ============ PLANTILLAS DE CONTRATO ============
+
+export interface ContractTemplate {
+  id: number
+  name: string
+  code: string
+  content: string
+  is_active: boolean
+  is_default: boolean
+  variables?: string[]
+  created_by?: number | null
+  created_at?: string
+  updated_at?: string
+  deleted_at?: string | null
+}
+
+export interface ContractTemplateVariable {
+  id: number
+  key: string
+  label: string
+  description?: string | null
+  group: string
+  data_type?: string
+  example_value?: string | null
+  is_active: boolean
+  sort_order: number
+  token: string
+  created_at?: string
+  updated_at?: string
 }

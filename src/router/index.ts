@@ -23,6 +23,9 @@ import ContractsListPage from '@/pages/contracts/ContractsListPage.vue'
 import ContractFormPage from '@/pages/contracts/ContractFormPage.vue'
 import ContractDetailPage from '@/pages/contracts/ContractDetailPage.vue'
 import ContractChangePlanPage from '@/pages/contracts/ContractChangePlanPage.vue'
+import ContractTemplatesListPage from '@/pages/contracts/ContractTemplatesListPage.vue'
+import ContractTemplateFormPage from '@/pages/contracts/ContractTemplateFormPage.vue'
+import ContractTemplateVariablesPage from '@/pages/contracts/ContractTemplateVariablesPage.vue'
 import SettingsPage from '@/pages/settings/SettingsPage.vue'
 import UsersListPage from '@/pages/users/UsersListPage.vue'
 import UserFormPage from '@/pages/users/UserFormPage.vue'
@@ -74,6 +77,11 @@ const router = createRouter({
         { path: 'contracts/contracts/:id', name: 'contracts.show', component: ContractDetailPage },
         { path: 'contracts/contracts/:id/edit', name: 'contracts.edit', component: ContractFormPage },
         { path: 'contracts/contracts/:id/change-plan', name: 'contracts.change-plan', component: ContractChangePlanPage },
+        // Plantillas de Contrato
+        { path: 'contracts/templates', name: 'contract-templates', component: ContractTemplatesListPage },
+        { path: 'contracts/templates/new', name: 'contract-templates.create', component: ContractTemplateFormPage },
+        { path: 'contracts/templates/:id/edit', name: 'contract-templates.edit', component: ContractTemplateFormPage },
+        { path: 'contracts/templates/:id/variables', name: 'contract-templates.variables', component: ContractTemplateVariablesPage },
         // Configuracion
         // Usuarios
         { path: 'usuarios', name: 'users', component: UsersListPage },
