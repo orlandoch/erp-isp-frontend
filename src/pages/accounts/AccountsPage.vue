@@ -131,7 +131,7 @@ const visibleRows = computed(() => {
 async function load() {
   loading.value = true
   try {
-    const { data } = await api.get('/settings/accounts', { params: { limit: 500 } })
+    const { data } = await api.get('/accounts', { params: { limit: 500 } })
     const items: Account[] = data.data || []
     allAccounts.value = items
     flatAccounts.value = items.map(a => ({
@@ -185,10 +185,10 @@ async function save() {
       is_active: selected.value.is_active,
     }
     if (editing.value) {
-      await api.put(`/settings/accounts/${selected.value.id}`, payload)
+      await api.put(`/accounts/${selected.value.id}`, payload)
       toast.add({ severity: 'success', summary: 'Cuenta actualizada', life: 3000 })
     } else {
-      await api.post('/settings/accounts', payload)
+      await api.post('/accounts', payload)
       toast.add({ severity: 'success', summary: 'Cuenta creada', life: 3000 })
     }
     dialogVisible.value = false
@@ -207,7 +207,7 @@ async function save() {
 
 async function toggleActive(acc: Account) {
   try {
-    await api.put(`/settings/accounts/${acc.id}`, { is_active: !acc.is_active })
+    await api.put(`/accounts/${acc.id}`, { is_active: !acc.is_active })
     await load()
   } catch {
     toast.add({ severity: 'error', summary: 'Error al cambiar estado', life: 3000 })
