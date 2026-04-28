@@ -24,6 +24,11 @@ import ContractFormPage from '@/pages/contracts/ContractFormPage.vue'
 import ContractDetailPage from '@/pages/contracts/ContractDetailPage.vue'
 import ContractChangePlanPage from '@/pages/contracts/ContractChangePlanPage.vue'
 import SettingsPage from '@/pages/settings/SettingsPage.vue'
+import UsersListPage from '@/pages/users/UsersListPage.vue'
+import UserFormPage from '@/pages/users/UserFormPage.vue'
+import RolesListPage from '@/pages/roles/RolesListPage.vue'
+import RoleFormPage from '@/pages/roles/RoleFormPage.vue'
+import RolePermissionsPage from '@/pages/roles/RolePermissionsPage.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -69,6 +74,16 @@ const router = createRouter({
         { path: 'contracts/contracts/:id', name: 'contracts.show', component: ContractDetailPage },
         { path: 'contracts/contracts/:id/edit', name: 'contracts.edit', component: ContractFormPage },
         { path: 'contracts/contracts/:id/change-plan', name: 'contracts.change-plan', component: ContractChangePlanPage },
+        // Configuracion
+        // Usuarios
+        { path: 'usuarios', name: 'users', component: UsersListPage },
+        { path: 'usuarios/nuevo', name: 'users.create', component: UserFormPage },
+        { path: 'usuarios/:id/editar', name: 'users.edit', component: UserFormPage },
+        // Roles
+        { path: 'roles', name: 'roles', component: RolesListPage },
+        { path: 'roles/nuevo', name: 'roles.create', component: RoleFormPage },
+        { path: 'roles/:id/editar', name: 'roles.edit', component: RoleFormPage },
+        { path: 'roles/:id/permisos', name: 'roles.permissions', component: RolePermissionsPage },
         // Configuracion
         { path: 'configuracion', name: 'settings', component: SettingsPage },
       ],

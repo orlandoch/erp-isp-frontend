@@ -62,6 +62,14 @@ const navItems: NavItem[] = [
       { label: 'Catálogo de Cuentas', icon: 'pi pi-table', to: '/contabilidad/cuentas' },
     ],
   },
+  {
+    label: 'Administración',
+    icon: 'pi pi-shield',
+    children: [
+      { label: 'Usuarios', icon: 'pi pi-users', to: '/usuarios' },
+      { label: 'Roles', icon: 'pi pi-shield', to: '/roles' },
+    ],
+  },
   { label: 'Configuración', icon: 'pi pi-cog', to: '/configuracion' },
 ]
 
