@@ -5,7 +5,7 @@ import { useUsersStore } from '@/stores/users'
 import { useRolesStore } from '@/stores/roles'
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
-import Select from 'primevue/select'
+import Checkbox from 'primevue/checkbox'
 import Button from 'primevue/button'
 import Message from 'primevue/message'
 import Card from 'primevue/card'
@@ -100,17 +100,20 @@ async function submit() {
             <label for="is_active" class="text-sm font-medium text-gray-700">Usuario activo</label>
           </div>
 
-          <div class="space-y-1">
+          <div class="space-y-2">
             <label class="text-sm font-medium text-gray-700">Roles</label>
-            <Select
-              v-model="form.roles"
-              :options="rolesStore.roles"
-              optionLabel="name"
-              optionValue="id"
-              multiple
-              class="w-full"
-              placeholder="Seleccionar roles..."
-            />
+            <div v-if="rolesStore.roles.length === 0" class="text-sm text-gray-400 italic">Cargando roles...</div>
+            <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <div v-for="role in rolesStore.roles" :key="role.id" class="flex items-center gap-2">
+                <Checkbox
+                  :inputId="'role-' + role.id"
+                  :value="role.id"
+                  v-model="form.roles"
+                  :binary="false"
+                />
+                <label :for="'role-' + role.id" class="text-sm cursor-pointer">{{ role.name }}</label>
+              </div>
+            </div>
           </div>
 
           <div class="flex justify-end gap-2 pt-2">
