@@ -14,7 +14,9 @@ import ProgressSpinner from 'primevue/progressspinner'
 import {
   getContract, activateContract, suspendContract, cancelContract,
   blockContract, unblockContract, getContractVersions, getContractCharges, getContractChangeLogs,
+  getContractPdfUrl, getContractVersionPdfUrl,
 } from '@/api/contracts'
+import api from '@/api/client'
 import type { Contract, ContractVersion, ContractCharge, ContractChangeLog } from '@/api/types'
 
 const route = useRoute()
@@ -126,6 +128,53 @@ function logActionLabel(action: string): string {
     contract_billing_day_changed: 'Cambio Día Facturación',
   }
   return map[action] ?? action
+}
+
+function activeVersion(): ContractVersion | null {
+  if (contract.value?.current_version_id) {
+    return versions.value.find(v => v.id === contract.value!.current_version_id) ?? null
+  }
+  return versions.value.filter(v => v.is_active).sort((a, b) => b.version_number - a.version_number)[0] ?? null
+}
+
+async function downloadLatestPdf() {
+  if (!contract.value) return
+  try {
+    const res = await api.get(`/contracts/${contract.value.id}/pdf`, { responseType: 'blob' })
+    const url = window.URL.createObjectURL(new Blob([res.data]))
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `contrato_${contract.value.code}.pdf`
+    a.click()
+    window.URL.revokeObjectURL(url)
+  } catch {
+    toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo descargar el PDF' })
+  }
+}
+
+function viewContractWeb() {
+  if (!contract.value) return
+  window.open(`/contracts/${contract.value.id}/view`, '_blank')
+}
+
+function viewVersionContractWeb(version: ContractVersion) {
+  if (!contract.value) return
+  window.open(`/contracts/${contract.value.id}/versions/${version.id}/view`, '_blank')
+}
+
+async function downloadVersionPdf(version: ContractVersion) {
+  if (!contract.value) return
+  try {
+    const res = await api.get(`/contracts/${contract.value.id}/versions/${version.id}/pdf`, { responseType: 'blob' })
+    const url = window.URL.createObjectURL(new Blob([res.data]))
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `contrato_${contract.value.code}_v${version.version_number}.pdf`
+    a.click()
+    window.URL.revokeObjectURL(url)
+  } catch {
+    toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo descargar el PDF' })
+  }
 }
 
 // Acciones
@@ -291,6 +340,24 @@ onMounted(loadContract)
                 </p>
               </div>
             </div>
+
+            <!-- Ver contrato en Web y PDF Download - Latest version -->
+            <div v-if="activeVersion()" class="mt-6 pt-4 border-t flex gap-2">
+              <Button
+                icon="pi pi-globe"
+                label="Ver Contrato en Web"
+                severity="secondary"
+                outlined
+                @click="viewContractWeb"
+              />
+              <Button
+                icon="pi pi-file-pdf"
+                label="Descargar PDF (Última Versión)"
+                severity="info"
+                outlined
+                @click="downloadLatestPdf"
+              />
+            </div>
           </TabPanel>
 
           <!-- Versiones -->
@@ -316,6 +383,29 @@ onMounted(loadContract)
               <Column header="Activa" style="width:80px">
                 <template #body="{ data }">
                   <i :class="data.is_active ? 'pi pi-check text-green-500' : ''"></i>
+                </template>
+              </Column>
+              <Column header="Acciones" style="width:120px">
+                <template #body="{ data }">
+                  <div class="flex gap-1" v-if="data.rendered_contract_text">
+                    <Button
+                      icon="pi pi-globe"
+                      severity="secondary"
+                      text
+                      rounded
+                      v-tooltip.top="'Ver en Web'"
+                      @click="viewVersionContractWeb(data)"
+                    />
+                    <Button
+                      icon="pi pi-file-pdf"
+                      severity="info"
+                      text
+                      rounded
+                      v-tooltip.top="'Descargar PDF'"
+                      @click="downloadVersionPdf(data)"
+                    />
+                  </div>
+                  <span v-else class="text-xs text-gray-400">—</span>
                 </template>
               </Column>
             </DataTable>
@@ -373,5 +463,3 @@ onMounted(loadContract)
     </Card>
   </div>
 </template>
-
-

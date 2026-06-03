@@ -11,9 +11,9 @@ import Textarea from 'primevue/textarea'
 import Calendar from 'primevue/calendar'
 import Message from 'primevue/message'
 import OverlayPanel from 'primevue/overlaypanel'
-import { createContract, updateContract, getContract, getInternetPlans } from '@/api/contracts'
+import { createContract, updateContract, getContract, getInternetPlans, getContractTemplatesList } from '@/api/contracts'
 import { getClients } from '@/api/clients'
-import type { InternetPlan } from '@/api/types'
+import type { InternetPlan, ContractTemplate } from '@/api/types'
 import type { Client } from '@/api/clients'
 
 const route = useRoute()
@@ -25,6 +25,8 @@ const loading = ref(false)
 const saving = ref(false)
 
 const plans = ref<InternetPlan[]>([])
+const templates = ref<ContractTemplate[]>([])
+
 const clientSearch = ref('')
 const clientResults = ref<any[]>([])
 const clientSearching = ref(false)
@@ -63,6 +65,7 @@ function pickClient(c: any) {
 const form = ref<Record<string, unknown>>({
   client_id: null,
   internet_plan_id: null,
+  contract_template_id: null,
   start_date: new Date().toISOString().split('T')[0],
   billing_day: null,
   billing_cycle: 'monthly',
@@ -95,13 +98,26 @@ const selectedPlan = computed(() => {
   return plans.value.find(p => p.id === form.value.internet_plan_id) ?? null
 })
 
+const defaultTemplate = computed(() => {
+  return templates.value.find(t => t.is_default) ?? null
+})
+
+// When internet_plan changes and we haven't explicitly set a template, auto-select default
+const userSelectedTemplate = ref(false)
+
+function onTemplateSelect() {
+  userSelectedTemplate.value = true
+}
+
 async function loadData() {
   loading.value = true
   try {
-    const [plansRes] = await Promise.all([
+    const [plansRes, templatesRes] = await Promise.all([
       getInternetPlans({ is_sellable: true, per_page: 500 }),
+      getContractTemplatesList({ per_page: 500 }),
     ])
     plans.value = plansRes.data ?? []
+    templates.value = templatesRes.data ?? []
 
     if (isEdit.value) {
       const res = await getContract(Number(route.params.id))
@@ -110,6 +126,7 @@ async function loadData() {
         form.value = {
           client_id: client?.id ?? null,
           internet_plan_id: res.data.internet_plan?.id ?? null,
+          contract_template_id: res.data.contract_template_id ?? null,
           start_date: res.data.start_date,
           billing_day: res.data.billing_day,
           billing_cycle: res.data.billing_cycle,
@@ -121,10 +138,18 @@ async function loadData() {
           management_ip: '',
           notes: '',
         }
+        if (res.data.contract_template_id) userSelectedTemplate.value = true
         if (client) {
           selectedClient.value = client
           clientSearch.value = `${client.first_name ?? ''} ${client.last_name ?? ''} — ${client.document_number ?? ''}`
         }
+      }
+    } else {
+      // Pre-select default template
+      const dt = templates.value.find(t => t.is_default)
+      if (dt) {
+        form.value.contract_template_id = dt.id
+        userSelectedTemplate.value = true
       }
     }
   } catch {
@@ -147,6 +172,7 @@ async function save() {
     if (!payload.ipv6_address) delete payload.ipv6_address
     if (!payload.management_ip) delete payload.management_ip
     if (!payload.notes) delete payload.notes
+    if (!payload.contract_template_id) delete payload.contract_template_id
 
     if (isEdit.value) {
       await updateContract(Number(route.params.id), payload)
@@ -224,6 +250,42 @@ onMounted(loadData)
                     {{ option.code }} — {{ option.name }} (${{ parseFloat(option.monthly_price).toFixed(2) }})
                   </template>
                 </Select>
+              </div>
+            </div>
+
+            <!-- Plantilla de Contrato -->
+            <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-1">
+                <label class="text-sm font-medium" for="contract_template_id">Plantilla de Contrato</label>
+                <Select
+                  id="contract_template_id"
+                  v-model="form.contract_template_id"
+                  :options="templates"
+                  optionLabel="label"
+                  optionValue="id"
+                  :showClear="true"
+                  placeholder="Seleccionar plantilla..."
+                  class="w-full"
+                  @update:modelValue="onTemplateSelect"
+                >
+                  <template #value="{ value }">
+                    <span v-if="value">
+                      {{ templates.find(t => t.id === value)?.name }}
+                      <span v-if="templates.find(t => t.id === value)?.is_default" class="text-xs text-blue-600 ml-1">(por defecto)</span>
+                    </span>
+                    <span v-else>Seleccionar plantilla (opcional)</span>
+                  </template>
+                  <template #option="{ option }">
+                    <div class="flex items-center justify-between">
+                      <span>{{ option.name }} <span v-if="option.code" class="text-xs text-gray-400">({{ option.code }})</span></span>
+                      <span v-if="option.is_default" class="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded">Defecto</span>
+                    </div>
+                  </template>
+                </Select>
+                <p class="text-xs text-gray-400 mt-1">
+                  Si seleccionas una plantilla, se renderizará automáticamente al crear el contrato.
+                  <span v-if="defaultTemplate && !userSelectedTemplate && !isEdit" class="text-blue-600">Plantilla por defecto preseleccionada.</span>
+                </p>
               </div>
             </div>
 

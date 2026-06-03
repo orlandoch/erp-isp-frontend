@@ -52,6 +52,7 @@ export interface Contract {
   code: string
   client: { id: number; first_name: string; last_name: string; document_number: string } | null
   internet_plan: { id: number; code: string; name: string } | null
+  contract_template_id: number | null
   status: string
   technical_status: string
   start_date: string
@@ -86,6 +87,7 @@ export interface ContractVersion {
   upload_speed_snapshot_kbps: number
   billing_cycle: string
   connection_type_snapshot: string
+  rendered_contract_text: string | null
   reason: string
   is_active: boolean
   start_date: string
@@ -152,7 +154,9 @@ export interface ContractTemplate {
   id: number
   name: string
   code: string
+  description: string | null
   content: string
+  body: string | null
   is_active: boolean
   is_default: boolean
   variables?: string[]

@@ -26,6 +26,7 @@ import ContractChangePlanPage from '@/pages/contracts/ContractChangePlanPage.vue
 import ContractTemplatesListPage from '@/pages/contracts/ContractTemplatesListPage.vue'
 import ContractTemplateFormPage from '@/pages/contracts/ContractTemplateFormPage.vue'
 import ContractTemplateVariablesPage from '@/pages/contracts/ContractTemplateVariablesPage.vue'
+import ContractWebPage from '@/pages/contracts/ContractWebPage.vue'
 import SettingsPage from '@/pages/settings/SettingsPage.vue'
 import UsersListPage from '@/pages/users/UsersListPage.vue'
 import UserFormPage from '@/pages/users/UserFormPage.vue'
@@ -37,6 +38,8 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/login', name: 'login', component: LoginPage, meta: { guest: true } },
+    { path: '/contracts/:id/view', name: 'contracts.web-view', component: ContractWebPage, meta: { requiresAuth: true } },
+    { path: '/contracts/:id/versions/:versionId/view', name: 'contracts.web-view-version', component: ContractWebPage, meta: { requiresAuth: true } },
     {
       path: '/',
       component: MainLayout,

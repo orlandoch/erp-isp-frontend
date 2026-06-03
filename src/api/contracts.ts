@@ -1,5 +1,22 @@
 import api from './client'
-import type { PaginatedResponse, InternetPlan, Contract, ContractCharge, ContractChangeLog } from './types'
+import type { PaginatedResponse, InternetPlan, Contract, ContractCharge, ContractChangeLog, ContractTemplate, ContractVersion } from './types'
+
+// ============ HELPERS ============
+
+export function getContractPdfUrl(contractId: number): string {
+  return `${import.meta.env.VITE_API_URL}/contracts/${contractId}/pdf`
+}
+
+export function getContractVersionPdfUrl(contractId: number, versionId: number): string {
+  return `${import.meta.env.VITE_API_URL}/contracts/${contractId}/versions/${versionId}/pdf`
+}
+
+// ============ PLANTILLAS DE CONTRATO ============
+
+export async function getContractTemplatesList(params?: Record<string, unknown>) {
+  const res = await api.get<{ success: boolean; data: ContractTemplate[] }>('/contract-templates', { params })
+  return res.data
+}
 
 // ============ PLANES DE INTERNET ============
 
@@ -96,7 +113,7 @@ export async function changeContractPlan(id: number, internetPlanId: number, rea
 }
 
 export async function getContractVersions(id: number) {
-  const res = await api.get<{ success: boolean; data: Contract[] }>(`/contracts/${id}/versions`)
+  const res = await api.get<{ success: boolean; data: ContractVersion[] }>(`/contracts/${id}/versions`)
   return res.data
 }
 
