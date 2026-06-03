@@ -1,89 +1,175 @@
-# erp-isp-frontend
+# erp-isp-frontend — Frontend SPA para ISP ERP (Vue 3 + PrimeVue)
 
-This template should help get you started developing with Vue 3 in Vite.
+Interfaz de usuario para el ERP **erp-isp**. SPA construida con Vue 3, TypeScript y PrimeVue, enfocada en la gestión de proveedores de servicios de Internet (ISP).
 
-## Recommended IDE Setup
+> **Nota:** Este frontend fue desarrollado para el backend `erp-isp`. Actualmente el proyecto activo es `work-orders-frontend`.
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Stack Técnico
 
-## Recommended Browser Setup
+| Componente | Versión |
+|---|---|
+| Vue | ^3.5.x |
+| TypeScript | ^5.x |
+| PrimeVue | ^4.5.x |
+| PrimeIcons | ^7.x |
+| Pinia (State Management) | ^3.x |
+| Vue Router | ^5.x |
+| Axios (HTTP Client) | ^1.x |
+| Quill Editor (vue-quill) | ^1.x |
+| Vite | ^6.x |
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+**Testing:**
+- Playwright (E2E)
+- Cypress (E2E alternativo)
 
-## Type Support for `.vue` Imports in TS
+## Estado Actual
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+**Completado/En pausa.** El frontend tiene todas las pantallas implementadas. No está en producción activa; el proyecto `work-orders-frontend` es el activo.
 
-## Customize configuration
+## Requisitos
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+- Node.js 18+
+- NPM
+- Backend `erp-isp` corriendo
 
-## Project Setup
+## Instalación y Ejecución
 
-```sh
+```bash
+# 1. Clonar
+git clone https://github.com/orlandoch/erp-isp-frontend.git
+cd erp-isp-frontend
+
+# 2. Instalar dependencias
 npm install
-```
 
-### Compile and Hot-Reload for Development
+# 3. Configurar entorno
+cp .env.example .env
+# Editar VITE_API_BASE_URL
 
-```sh
+# 4. Iniciar dev server
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+## Arquitectura
 
-```sh
-npm run build
+```
+src/
+├── api/                          # Módulos de API (Axios por recurso)
+│   ├── client.ts                 # Cliente Axios con interceptors
+│   ├── types.ts                  # Tipos/Interfaces
+│   ├── accounts.ts               # API de contabilidad
+│   ├── auth.ts                   # API de autenticación
+│   ├── categories.ts             # API de categorías
+│   ├── clients.ts                # API de clientes
+│   ├── contracts.ts              # API de contratos
+│   ├── contractTemplates.ts      # API de templates de contratos
+│   ├── electronicDocuments.ts    # API de documentos electrónicos SRI
+│   ├── establishments.ts         # API de sucursales/puntos emisión
+│   ├── invoices.ts               # API de facturación
+│   ├── ivas.ts                   # API de tasas IVA
+│   ├── payments.ts               # API de pagos
+│   ├── products.ts               # API de productos
+│   ├── receivables.ts            # API de cuentas por cobrar
+│   ├── roles.ts                  # API de roles
+│   ├── settings.ts               # API de configuraciones
+│   └── users.ts                  # API de usuarios
+├── components/
+│   └── layout/
+│       ├── TopBar.vue            # Barra superior
+│       └── Sidebar.vue           # Barra lateral de navegación
+├── pages/                        # Páginas del SPA
+│   ├── LoginPage.vue             # Inicio de sesión
+│   ├── DashboardPage.vue         # Dashboard principal
+│   ├── accounts/
+│   │   └── AccountsPage.vue      # Plan de cuentas contable
+│   ├── contracts/
+│   │   └── ContractWebPage.vue   # Página web de contratos (visión pública/privada)
+│   ├── electronic/
+│   │   └── ElectronicDocumentsListPage.vue  # Documentos electrónicos SRI
+│   ├── invoices/
+│   │   ├── InvoiceDetailPage.vue # Detalle de factura
+│   │   ├── InvoiceFormPage.vue   # Formulario de factura
+│   │   └── InvoicesListPage.vue  # Lista de facturas
+│   ├── products/
+│   │   ├── CategoriesPage.vue    # Categorías de productos
+│   │   ├── ProductFormPage.vue   # Formulario de producto
+│   │   └── ProductsListPage.vue  # Lista de productos
+│   ├── receivables/
+│   │   └── ReceivablesListPage.vue  # Cuentas por cobrar
+│   ├── roles/
+│   │   ├── RoleFormPage.vue      # Formulario de rol
+│   │   ├── RolePermissionsPage.vue  # Permisos por rol
+│   │   └── RolesListPage.vue     # Lista de roles
+│   ├── settings/
+│   │   └── SettingsPage.vue      # Configuración del sistema
+│   └── users/
+│       ├── UserFormPage.vue      # Formulario de usuario
+│       └── UsersListPage.vue     # Lista de usuarios
+├── stores/                       # Stores Pinia (state management)
+│   ├── auth.ts                   # Estado de autenticación
+│   ├── roles.ts                  # Estado de roles
+│   └── users.ts                  # Estado de usuarios
+├── router/
+│   └── index.ts                  # Configuración de rutas
+├── App.vue                       # Componente raíz
+└── main.ts                       # Punto de entrada
 ```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+## Rutas del Frontend
 
-```sh
-npm run test:unit
-```
+| Ruta | Página | Módulo |
+|---|---|---|
+| `/login` | LoginPage | Auth |
+| `/` | DashboardPage | Dashboard |
+| `/invoices` | InvoicesListPage | Facturación |
+| `/invoices/new` | InvoiceFormPage | Facturación |
+| `/invoices/:id` | InvoiceDetailPage | Facturación |
+| `/invoices/:id/edit` | InvoiceFormPage | Facturación |
+| `/products` | ProductsListPage | Productos |
+| `/products/new` | ProductFormPage | Productos |
+| `/products/:id/edit` | ProductFormPage | Productos |
+| `/products/categories` | CategoriesPage | Productos |
+| `/users` | UsersListPage | Usuarios |
+| `/users/new` | UserFormPage | Usuarios |
+| `/users/:id/edit` | UserFormPage | Usuarios |
+| `/roles` | RolesListPage | Roles |
+| `/roles/new` | RoleFormPage | Roles |
+| `/roles/:id/permissions` | RolePermissionsPage | Roles |
+| `/electronic-documents` | ElectronicDocumentsListPage | SRI |
+| `/receivables` | ReceivablesListPage | Cobranzas |
+| `/accounts` | AccountsPage | Contabilidad |
+| `/settings` | SettingsPage | Configuración |
+| `/contracts/web` | ContractWebPage | Contratos |
 
-### Run End-to-End Tests with [Cypress](https://www.cypress.io/)
+## Funcionalidades Implementadas
 
-```sh
-npm run test:e2e:dev
-```
+- Dashboard con resumen de métricas
+- CRUD completo de facturas con selección de cliente, productos, IVA
+- Emisión de facturas con generación de documento electrónico SRI
+- CRUD de productos con categorías e IVA
+- CRUD de clientes
+- Administración de usuarios y roles con permisos granulares
+- Lista de documentos electrónicos con seguimiento de estado SRI
+- Cuentas por cobrar
+- Plan de cuentas contable
+- Configuración general del sistema
+- Página web de contratos (vista pública/privada)
+- Layout con sidebar y topbar navegable
+- Autenticación con token y guards de ruta
 
-This runs the end-to-end tests against the Vite development server.
-It is much faster than the production build.
+## Dependencias UI Notables
 
-But it's still recommended to test the production build with `test:e2e` before deploying (e.g. in CI environments):
+- **PrimeVue 4**: Componentes UI principales
+- **PrimeIcons**: Iconografía
+- **Vue Quill**: Editor de texto enriquecido (para templates de contratos)
+- **Pinia**: State management
 
-```sh
-npm run build
-npm run test:e2e
-```
+## Bugs Conocidos / Reparados
 
-### Run End-to-End Tests with [Playwright](https://playwright.dev)
+*(A completar de forma incremental)*
 
-```sh
-# Install browsers for the first run
-npx playwright install
+---
 
-# When testing on CI, must build the project first
-npm run build
+## Historial de Cambios
 
-# Runs the end-to-end tests
-npm run test:e2e
-# Runs the tests only on Chromium
-npm run test:e2e -- --project=chromium
-# Runs the tests of a specific file
-npm run test:e2e -- tests/example.spec.ts
-# Runs the tests in debug mode
-npm run test:e2e -- --debug
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+*(A partir del próximo commit, cada cambio se documentará aquí como append con fecha, descripción y hash del commit.)*
